@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,45 +13,54 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSignin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     if (loading) return;
+    e.preventDefault();
 
     setLoading(true);
-    if (!email || !password) {
-      toast("All fields are required!", {
+
+    try {
+      await axios.post("/api/auth/register", {
+        email,
+        password,
+      });
+
+      toast("Registration successful", {
         style: {
           background: "#9810fa",
           color: "white",
         },
       });
-      setLoading(false);
-      return;
+
+      //immediately signin the user
+      const loginRes = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (loginRes?.error) {
+        router.replace("/");
+      } else {
+        router.replace("/auth/setup-profile");
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast(error.response?.data.error || "Something went wrong", {
+          style: {
+            background: "#9810fa",
+            color: "white",
+          },
+        });
+      } else {
+        toast("Network error please try again", {
+          style: {
+            background: "#9810fa",
+            color: "white",
+          },
+        });
+      }
     }
-
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
-    if (res?.error) {
-      toast("Invalid Credentials", {
-        style: {
-          background: "#9810fa",
-          color: "white",
-        },
-      });
-    } else {
-      toast("Signin successful", {
-        style: {
-          background: "#9810fa",
-          color: "white",
-        },
-      });
-      router.replace("/auth/setup-profile");
-    }
-
     setLoading(false);
   };
   return (
@@ -60,10 +70,10 @@ export default function Home() {
           <AiFillMessage size={50} />
         </div>
         <h2 className="text-center text-3xl font-bold my-6 text-gray-300">
-          Sign in to your account
+          Create a new account
         </h2>
         <div className="py-10 px-6 rounded-lg  shadow-md">
-          <form onSubmit={handleSignin}>
+          <form onSubmit={handleSignup}>
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -79,12 +89,12 @@ export default function Home() {
               className="w-full px-4 py-3 placeholder-text-gray-400 bg-input-bg rounded-lg outline-none text-gray-100 my-3"
             />
             <button className="w-full bg-linear-to-r from-blue-500 to-purple-600 my-2 py-2 text-white rounded-lg cursor-pointer hover:from-blue-600 transition">
-              {loading ? "Signing In..." : "Signin"}
+              {loading ? "Signing up..." : "Signup"}
             </button>
             <div className="my-3 text-center text-white">
-              <span>Don&apos;t have an account?</span>
-              <Link href="/auth/signup" className="ml-2 text-purple-600">
-                Signup
+              <span>Already have an account?</span>
+              <Link href="/" className="ml-2 text-purple-600">
+                Signin
               </Link>
             </div>
           </form>
