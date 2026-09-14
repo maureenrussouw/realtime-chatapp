@@ -22,9 +22,9 @@ export default function SetupProfile() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(loading) return;
+    if (loading) return;
 
     //client side validation
     if (!name || !bio || !image) {
@@ -39,28 +39,27 @@ export default function SetupProfile() {
     setLoading(true);
 
     try {
-        const formData = new FormData();
-        formData.append("name",name) ;
-        formData.append("bio",bio);
-        formData.append("avatar",image as File);
-        
-        await axios.post("/api/auth/setup-profile",formData);
-        toast("Profile updated succesfully", {
-        style: {
-          background: "#9810fa",
-          color: "white",
-        },
-      }); 
-      router.replace("/chat");
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("bio", bio);
+      formData.append("avatar", image as File);
 
-    } catch (error) {
-        console.log(error); 
-         toast("Something went wrong", {
+      await axios.post("/api/auth/setup-profile", formData);
+      toast("Profile updated succesfully", {
         style: {
           background: "#9810fa",
           color: "white",
         },
-      });       
+      });
+      router.replace("/chat");
+    } catch (error) {
+      console.log(error);
+      toast("Something went wrong", {
+        style: {
+          background: "#9810fa",
+          color: "white",
+        },
+      });
     }
     setLoading(false);
   };

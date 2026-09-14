@@ -12,7 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSignin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignin = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
 
@@ -84,7 +84,7 @@ export default function Home() {
             <div className="my-3 text-center text-white">
               <span>Don&apos;t have an account?</span>
               <Link href="/auth/signup" className="ml-2 text-purple-600">
-                Signup
+                {loading ? "Signing in..." : "Signup"}
               </Link>
             </div>
           </form>
