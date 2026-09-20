@@ -76,6 +76,7 @@ export default function SetupProfile() {
           <div className="flex justify-center">
             {imagePreview && (
               <Image
+                loading="eager"
                 src={imagePreview}
                 alt="uploaded-image"
                 width={1000}

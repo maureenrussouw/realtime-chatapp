@@ -6,29 +6,32 @@ import { useChatStore } from "../../lib/store";
 import { SpinnerCircularFixed } from "spinners-react";
 
 type User = {
-    name: string;
-    id: string;
-    email: string;
-    avatar: string;
-    bio: string | null;
-    password: string;
-    hasProfile: boolean;
-    createdAt: Date;
-}
+  name: string;
+  id: string;
+  email: string;
+  avatar: string;
+  bio: string | null;
+  password: string;
+  hasProfile: boolean;
+  createdAt: Date;
+};
 
 type FriendListProps = {
-  onlineIds: string[],
-  setSideberOpen:(value:boolean) => void
-}
+  onlineIds: string[];
+  setSideberOpen: (value: boolean) => void;
+};
 
-export default function FriendsList({ onlineIds,setSideberOpen }: FriendListProps) {
+export default function FriendsList({
+  onlineIds,
+  setSideberOpen,
+}: FriendListProps) {
   const { users, isLoading, isError } = useGetUsers();
-  const {setActiveChatUser} = useChatStore();
+  const { setActiveChatUser } = useChatStore();
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-30">
-        <SpinnerCircularFixed size={30}color="#4f39f6"/>
+        <SpinnerCircularFixed size={30} color="#4f39f6" />
       </div>
     );
   }
@@ -41,19 +44,20 @@ export default function FriendsList({ onlineIds,setSideberOpen }: FriendListProp
         const isOnline = onlineIds.includes(user.id);
         return (
           <div
-          onClick={() => {
-            setActiveChatUser({
-              id:user.id,
-              name:user.name,
-              avatar:user.avatar
-            })
-            setSideberOpen(false);            
-          }}
+            onClick={() => {
+              setActiveChatUser({
+                id: user.id,
+                name: user.name,
+                avatar: user.avatar,
+              });
+              setSideberOpen(false);
+            }}
             key={user.id}
             className="flex items-center  gap-2 p-3 rounded-lg cursor-pointer hover:bg-input-bg"
           >
             {user.avatar && (
               <Image
+                loading="eager"
                 src={user.avatar}
                 width={1000}
                 height={100}

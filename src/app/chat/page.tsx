@@ -7,27 +7,27 @@ import { FaUser } from "react-icons/fa6";
 import { useGetMessage } from "../../../custom-hooks/useMessage";
 import ChatWindow from "@/components/ChatWindow";
 import { SpinnerCircularFixed } from "spinners-react";
+import { SessionProvider } from "next-auth/react";
 
 export default function Page() {
   const { activeChatUser, onlineIds } = useChatStore();
-  const receiverId = activeChatUser?.id
-  const {messages,isLoading,isError} = useGetMessage(receiverId);
+  const receiverId = activeChatUser?.id;
+  const { messages, isLoading, isError } = useGetMessage(receiverId);
 
-  if(isLoading){
+  if (isLoading) {
     return (
-     <div className="flex justify-center items-center py-30">
-             <SpinnerCircularFixed size={30}color="#4f39f6"/>
-           </div>
-    )
+      <div className="flex justify-center items-center py-30">
+        <SpinnerCircularFixed size={30} color="#4f39f6" />
+      </div>
+    );
   }
-  if(isError){
+  if (isError) {
     return (
       <div className="flex-1 flex items-center justify-center p-4">
         <p className="text-gray-400">Error Fetching Messages</p>
       </div>
-    )
+    );
   }
-
 
   if (!activeChatUser) {
     return (
@@ -44,13 +44,14 @@ export default function Page() {
       </div>
     );
   }
-  
+
   return (
     <div className="flex flex-col h-screen flex-1 p-4">
       {/* header */}
       <div className="flex items-center gap-2">
         {activeChatUser.avatar && (
           <Image
+            loading="eager"
             src={activeChatUser.avatar}
             alt="profile-pic"
             width={1000}
@@ -67,12 +68,13 @@ export default function Page() {
           )}
         </div>
       </div>
+      <SessionProvider>
+        {/* chat window */}
+        <ChatWindow messages={messages} />
 
-      {/* chat window */}
-    <ChatWindow messages={messages}/>
-
-      {/* chatInput */}
-      <ChatInput />
+        {/* chatInput */}
+        <ChatInput />
+      </SessionProvider>
     </div>
   );
 }
