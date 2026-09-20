@@ -65,7 +65,7 @@ export default function SetupProfile() {
   };
   return (
     <div className="h-screen flex justify-center items-center">
-      <div className="max-w-[350px] w-[95%]">
+      <div className="max-w-87.5 w-[95%]">
         <div className="flex justify-center text-indigo-600">
           <AiFillMessage size={50} />
         </div>
@@ -104,7 +104,7 @@ export default function SetupProfile() {
               type="file"
               className="w-full px-4 py-3 placeholder-text-gray-400 bg-input-bg rounded-lg outline-none text-gray-100 my-3"
             />
-            <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 my-2 py-2 text-white rounded-lg cursor-pointer hover:from-blue-600 transition">
+            <button className="w-full bg-linear-to-r from-blue-500 to-purple-600 my-2 py-2 text-white rounded-lg cursor-pointer hover:from-blue-600 transition">
               {loading ? "Updating Profile" : "Continue"}
             </button>
           </form>

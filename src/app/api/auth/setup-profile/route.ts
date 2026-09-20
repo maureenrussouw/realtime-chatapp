@@ -35,7 +35,7 @@ export async function POST(req: Request) {
             }
           })
           .end(buffer);
-      }
+      },
     );
 
     const avatar_url = uploadResult.secure_url;
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     console.error("profile-setup-error:", error);
     return NextResponse.json(
       { error: "Failed to update profile" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
