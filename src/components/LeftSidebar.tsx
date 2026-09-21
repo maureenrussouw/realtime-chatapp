@@ -40,10 +40,9 @@ export default function LeftSidebar() {
       }));
     });
 
-
     return () => {
       pusherClient.unsubscribe("presence-online-users");
-    }
+    };
   }, []);
 
   const toggleSidebar = () => setSideberOpen((prev) => !prev);
@@ -51,12 +50,12 @@ export default function LeftSidebar() {
     <div>
       <button
         onClick={toggleSidebar}
-        className="fixed bottom-3 left-1 bg-gradient-to-r from-blue-500 to-purple-600 w-12 h-12 grid place-items-center text-white rounded-full  z-50 cursor-pointer md:hidden"
+        className="fixed bottom-3 left-1 bg-linear-to-r from-blue-500 to-purple-600 w-12 h-12 grid place-items-center text-white rounded-full  z-50 cursor-pointer md:hidden"
       >
         <AiFillMessage />
       </button>
       <aside
-        className={`min-h-screen bg-slate-950 z-50 md:translate-x-0 w-full fixed top-0 left-0 md:w-[350px] border-r border-border ${
+        className={`min-h-screen bg-slate-950 z-50 md:translate-x-0 w-full fixed top-0 left-0 md:w-87.5 border-r border-border ${
           sideberOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -64,12 +63,12 @@ export default function LeftSidebar() {
           {/* header */}
           <div className="w-full h-15 absolute top-0 left-0 p-4 flex justify-between items-center border border-border">
             <span className="text-2xl font-bold text-gray-400">Friends</span>
-            <div className="h-9 w-9 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xl grid place-items-center">
+            <div className="h-9 w-9 rounded-full bg-linear-to-r from-blue-500 to-purple-600 text-white text-xl grid place-items-center">
               <FaUsers />
             </div>
           </div>
           {/* friendslist */}
-          <FriendsList onlineIds={onlineIds}setSideberOpen={setSideberOpen}/>
+          <FriendsList onlineIds={onlineIds} setSideberOpen={setSideberOpen} />
         </div>
       </aside>
     </div>

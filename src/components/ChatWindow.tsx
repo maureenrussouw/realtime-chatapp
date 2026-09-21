@@ -7,42 +7,41 @@ import { useChatStore } from "../../lib/store";
 import { pusherClient } from "../../lib/pusher-client";
 
 export default function ChatWindow({ messages }: { messages: MessageType[] }) {
-  const {activeChatUser} = useChatStore();
-  const receiverId = activeChatUser?.id
+  const { activeChatUser } = useChatStore();
+  const receiverId = activeChatUser?.id;
   const { data: session } = useSession();
   const currentUserId = session?.user.id;
-  const [chatMessages,setChatMessages] = useState<MessageType[]>(messages);
+  const [chatMessages, setChatMessages] = useState<MessageType[]>(messages);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({behavior:"smooth"})
-  },[chatMessages]);
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
   //subscribe to private chat channel
   useEffect(() => {
-    if(!currentUserId || !receiverId) return;
+    if (!currentUserId || !receiverId) return;
 
     //get private channel name
-    const ids = [currentUserId,receiverId].sort();
+    const ids = [currentUserId, receiverId].sort();
     const channelName = `chat-${ids[0]}-${ids[1]}`;
 
     const channel = pusherClient.subscribe(channelName);
 
-    const handleNewMessage = (message:MessageType) => {
+    const handleNewMessage = (message: MessageType) => {
       setChatMessages((prev) => {
         //avoid duplicate messages;
-        if(prev.some((m) => m.id === message.id)) return prev;
-        return [...prev,message]
-      })
-    }
+        if (prev.some((m) => m.id === message.id)) return prev;
+        return [...prev, message];
+      });
+    };
 
-    channel.bind("new-message",handleNewMessage);
+    channel.bind("new-message", handleNewMessage);
 
     return () => {
-      channel.unbind("new-message",handleNewMessage);
+      channel.unbind("new-message", handleNewMessage);
       pusherClient.unsubscribe(channelName);
-    }
-  },[currentUserId,receiverId]);
+    };
+  }, [currentUserId, receiverId]);
   return (
     <div className="flex-1 overflow-y-auto p-2 space-y-4 mt-6">
       {chatMessages.length === 0 ? (
@@ -65,16 +64,18 @@ export default function ChatWindow({ messages }: { messages: MessageType[] }) {
               key={message.id}
             >
               {!isOwnMessage && message.sender.avatar && (
-                 <Image
-                src={message.sender.avatar}
-                alt="profile-pic"
-                width={1000}
-                height={1000}
-                className="w-10 h-10 rounded-full object-cover"
-              />
+                <Image
+                  src={message.sender.avatar}
+                  alt="profile-pic"
+                  width={1000}
+                  height={1000}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
               )}
               <div className="max-w-xs text-right">
-                <div className={`px-4 py-2 text-white rounded-lg ${isOwnMessage ? "bg-gradient-to-r from-blue-500 to-purple-600 rounded-br-2xl" : "bg-slate-800 rounded-bl-2xl"}`}>
+                <div
+                  className={`px-4 py-2 text-white rounded-lg ${isOwnMessage ? "bg-linear-to-r from-blue-500 to-purple-600 rounded-br-2xl" : "bg-slate-800 rounded-bl-2xl"}`}
+                >
                   {message.text}
                 </div>
                 <span className="text-xs text-gray-400 mr-2">
@@ -84,21 +85,20 @@ export default function ChatWindow({ messages }: { messages: MessageType[] }) {
                   })}
                 </span>
               </div>
-               {isOwnMessage && message.sender.avatar && (
-                 <Image
-                src={message.sender.avatar}
-                alt="profile-pic"
-                width={1000}
-                height={1000}
-                className="w-10 h-10 rounded-full object-cover"
-              />
+              {isOwnMessage && message.sender.avatar && (
+                <Image
+                  src={message.sender.avatar}
+                  alt="profile-pic"
+                  width={1000}
+                  height={1000}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
               )}
-             
             </div>
           );
         })
       )}
-      <div ref={bottomRef}/>
+      <div ref={bottomRef} />
     </div>
   );
 }
